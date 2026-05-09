@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/mongodb';
 import User from '../../../../models/User';
 import { auth0 } from '../../../../lib/auth0';
+import * as cheerio from 'cheerio';
 
 export async function POST(req) {
   try {
@@ -11,7 +12,14 @@ export async function POST(req) {
     }
 
     await dbConnect();
-    const { handles } = await req.json();
+    const { handles: rawHandles } = await req.json();
+    const handles = {
+      leetcode: rawHandles.leetcode?.trim() || '',
+      codeforces: rawHandles.codeforces?.trim() || '',
+      codechef: rawHandles.codechef?.trim() || '',
+      gfg: rawHandles.gfg?.trim() || '',
+      codingninjas: rawHandles.codingninjas?.trim() || ''
+    };
 
     // 1. Fetch Stats from various platforms
     let leetcodeSolved = 0;
@@ -52,12 +60,30 @@ export async function POST(req) {
 
         const statusData = await statusRes.json();
         if (statusData.status === 'OK') {
-          // Count unique solved problems
-          const solved = new Set(statusData.result
-            .filter(sub => sub.verdict === 'OK')
-            .map(sub => `${sub.problem.contestId}-${sub.problem.index}`)
-          );
+          // Count unique solved problems (Contest + Gym)
+          const solved = new Set();
+          statusData.result.forEach(sub => {
+            if (sub.verdict === 'OK' && sub.problem) {
+              const problemId = sub.problem.contestId 
+                ? `${sub.problem.contestId}-${sub.problem.index}`
+                : `${sub.problem.problemsetName || 'gym'}-${sub.problem.index}`;
+              solved.add(problemId);
+            }
+          });
           cfSolved = solved.size;
+        }
+
+        // Fallback: If API returns 0 or fails, scrape the profile page
+        if (cfSolved === 0) {
+          try {
+            const profileRes = await fetch(`https://codeforces.com/profile/${handles.codeforces}`, {
+              headers: { 'User-Agent': 'Mozilla/5.0' }
+            });
+            const profileHtml = await profileRes.text();
+            const $ = cheerio.load(profileHtml);
+            const solvedMatch = profileHtml.match(/(\d+)\s+problems\s+solved/i);
+            if (solvedMatch) cfSolved = parseInt(solvedMatch[1]);
+          } catch (e) { console.error('CF Scrape fallback failed', e); }
         }
       } catch (e) { console.error('CF Sync failed', e); }
     }

@@ -26,9 +26,14 @@ export async function GET(req) {
     const maxRating = maxRatingMatch ? maxRatingMatch[0] : rating;
 
     // Fetch solved count
-    const solvedText = $('.problems-solved h3').first().text() || '0';
-    const solvedMatch = solvedText.match(/\d+/);
-    const solved = solvedMatch ? parseInt(solvedMatch[0]) : 0;
+    let solved = 0;
+    $('.problems-solved h3').each((i, el) => {
+      const text = $(el).text();
+      if (text.includes('Total Problems Solved')) {
+        const match = text.match(/\d+/);
+        if (match) solved = parseInt(match[0]);
+      }
+    });
 
     return NextResponse.json({
       rating: parseInt(rating),
