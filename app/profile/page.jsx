@@ -31,13 +31,30 @@ export default function Profile() {
     const savedAvatar = localStorage.getItem('custom-avatar');
     if (savedAvatar) setCustomAvatar(savedAvatar);
     
-    // Load saved usernames
-    const savedProfiles = JSON.parse(localStorage.getItem('dsa-profiles') || '{}');
-    if (savedProfiles.leetcode) setLcUsername(savedProfiles.leetcode);
-    if (savedProfiles.codeforces) setCfUsername(savedProfiles.codeforces);
-    if (savedProfiles.codechef) setCcUsername(savedProfiles.codechef);
-    if (savedProfiles.gfg) setGfgUsername(savedProfiles.gfg);
-    if (savedProfiles.codingninjas) setCnUsername(savedProfiles.codingninjas);
+    // Fetch user from DB to get handles and stats
+    fetch('/api/profile/sync', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ handles: {} }) 
+    })
+    .then(res => res.json())
+    .then(dbUser => {
+      if (dbUser.handles) {
+        setLcUsername(dbUser.handles.leetcode || '');
+        setCfUsername(dbUser.handles.codeforces || '');
+        setCcUsername(dbUser.handles.codechef || '');
+        setGfgUsername(dbUser.handles.gfg || '');
+        setCnUsername(dbUser.handles.codingninjas || '');
+      }
+      if (dbUser.stats) {
+        const s = dbUser.stats;
+        if (s.leetcodeSolved) setLcStats({ total: s.leetcodeSolved, easy: Math.floor(s.leetcodeSolved * 0.4), medium: Math.floor(s.leetcodeSolved * 0.4), hard: Math.floor(s.leetcodeSolved * 0.2) });
+        if (s.codeforcesSolved) setCfStats({ rating: s.codeforcesRating, solved: s.codeforcesSolved });
+        if (s.codechefSolved) setCcStats({ rating: s.codechefRating, solved: s.codechefSolved });
+        if (s.gfgSolved) setGfgStats({ problems: s.gfgSolved });
+        if (s.codingninjasSolved) setCnStats({ solved: s.codingninjasSolved });
+      }
+    }).catch(err => console.error('Initial fetch failed', err));
   }, []);
 
   if (isLoading) return <div style={{textAlign:'center', marginTop:'4rem'}}>Loading...</div>;
@@ -84,18 +101,16 @@ export default function Profile() {
         }
 
         // Update local state from database response
-        if (updatedUser.stats.leetcodeSolved) {
-          setLcStats({
-            total: updatedUser.stats.leetcodeSolved,
-            easy: Math.floor(updatedUser.stats.leetcodeSolved * 0.4),
-            medium: Math.floor(updatedUser.stats.leetcodeSolved * 0.4),
-            hard: Math.floor(updatedUser.stats.leetcodeSolved * 0.2)
-          });
+        if (updatedUser.stats) {
+          const s = updatedUser.stats;
+          setLcStats({ total: s.leetcodeSolved, easy: Math.floor(s.leetcodeSolved * 0.4), medium: Math.floor(s.leetcodeSolved * 0.4), hard: Math.floor(s.leetcodeSolved * 0.2) });
+          setCfStats({ rating: s.codeforcesRating, solved: s.codeforcesSolved });
+          setCcStats({ rating: s.codechefRating, solved: s.codechefSolved });
+          setGfgStats({ problems: s.gfgSolved });
+          setCnStats({ solved: s.codingninjasSolved });
         }
-        if (updatedUser.stats.codeforcesRating) setCfStats({ rating: updatedUser.stats.codeforcesRating });
-        if (updatedUser.stats.gfgSolved) setGfgStats({ problems: updatedUser.stats.gfgSolved });
         
-        alert('Profiles synced successfully! Your heatmap and leaderboard are updated.');
+        alert('Profiles synced successfully!');
       }
     } catch (err) {
       console.error('Sync Error:', err);
@@ -192,11 +207,13 @@ export default function Profile() {
 
             <div style={{textAlign: 'left', borderTop: '1px solid var(--border)', paddingTop: '1rem', marginTop: '1rem'}}>
               <h4 style={{marginBottom: '1rem', fontSize: '0.9rem', color: '#64748b'}}>Connected Accounts</h4>
-              {lcStats && <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}><span style={{fontWeight: '500'}}><i className="fas fa-code" style={{color: '#f59e0b', marginRight: '5px'}}></i> LeetCode</span><i className="fas fa-check-circle" style={{color: 'var(--success)'}}></i></div>}
-              {cfStats && <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}><span style={{fontWeight: '500'}}><i className="fas fa-chart-bar" style={{color: '#3b82f6', marginRight: '5px'}}></i> Codeforces</span><i className="fas fa-check-circle" style={{color: 'var(--success)'}}></i></div>}
-              {ccStats && <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}><span style={{fontWeight: '500'}}><i className="fas fa-utensils" style={{color: '#8b5cf6', marginRight: '5px'}}></i> CodeChef</span><i className="fas fa-check-circle" style={{color: 'var(--success)'}}></i></div>}
-              {gfgStats && <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}><span style={{fontWeight: '500'}}><i className="fas fa-book" style={{color: '#10b981', marginRight: '5px'}}></i> GFG</span><i className="fas fa-check-circle" style={{color: 'var(--success)'}}></i></div>}
-              {cnStats && <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}><span style={{fontWeight: '500'}}><i className="fas fa-user-ninja" style={{color: '#ef4444', marginRight: '5px'}}></i> Coding Ninjas</span><i className="fas fa-check-circle" style={{color: 'var(--success)'}}></i></div>}
+              <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+                {lcStats && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-code" style={{color: '#f59e0b', width: '20px'}}></i> LeetCode</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
+                {cfStats && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-chart-bar" style={{color: '#3b82f6', width: '20px'}}></i> Codeforces</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
+                {ccStats && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-utensils" style={{color: '#8b5cf6', width: '20px'}}></i> CodeChef</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
+                {gfgStats && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-book" style={{color: '#10b981', width: '20px'}}></i> GFG</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
+                {cnStats && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-user-ninja" style={{color: '#ef4444', width: '20px'}}></i> Coding Ninjas</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
+              </div>
             </div>
           </div>
 
@@ -248,9 +265,8 @@ export default function Profile() {
                 <>
                   <div className="contest-rank">
                     <div style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '0.5rem'}}>CODEFORCES</div>
-                    <div className="contest-rank-title" style={{color: 'var(--primary)'}}>{cfStats.rank || 'Unrated'}</div>
-                    <div className="contest-rank-value">{cfStats.rating || 0}</div>
-                    <div style={{fontSize: '0.8rem', color: '#64748b'}}>(max: {cfStats.maxRating || 0})</div>
+                    <div className="contest-rank-value">{cfStats.solved || 0} <span style={{fontSize:'0.9rem', fontWeight: 500}}>Solved</span></div>
+                    <div style={{fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 'bold'}}>Rating: {cfStats.rating || 0}</div>
                   </div>
                   <hr style={{border: 0, borderTop: '1px solid var(--border)', margin: '1.5rem 0'}} />
                 </>
@@ -260,9 +276,8 @@ export default function Profile() {
                 <>
                   <div className="contest-rank">
                     <div style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '0.5rem'}}>CODECHEF</div>
-                    <div className="contest-rank-stars">{'★'.repeat(ccStats.stars)}</div>
-                    <div className="contest-rank-value">{ccStats.rating}</div>
-                    <div style={{fontSize: '0.8rem', color: '#64748b'}}>(max: {ccStats.maxRating})</div>
+                    <div className="contest-rank-value">{ccStats.solved || 0} <span style={{fontSize:'0.9rem', fontWeight: 500}}>Solved</span></div>
+                    <div style={{fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 'bold'}}>Rating: {ccStats.rating || 0}</div>
                   </div>
                   <hr style={{border: 0, borderTop: '1px solid var(--border)', margin: '1.5rem 0'}} />
                 </>
@@ -272,20 +287,19 @@ export default function Profile() {
                 <>
                   <div className="contest-rank">
                     <div style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '0.5rem'}}>GEEKSFORGEEKS</div>
-                    <div className="contest-rank-value">{gfgStats.score} <span style={{fontSize:'1rem'}}>Score</span></div>
-                    <div style={{fontSize: '0.8rem', color: '#64748b'}}>{gfgStats.problems} Problems Solved</div>
+                    <div className="contest-rank-value">{gfgStats.problems || 0} <span style={{fontSize:'0.9rem', fontWeight: 500}}>Solved</span></div>
                   </div>
-                  <hr style={{border: 0, borderTop: '1px solid var(--border)', margin: '1.5rem 0'}} />
+                  {cnStats && <hr style={{border: 0, borderTop: '1px solid var(--border)', margin: '1.5rem 0'}} />}
                 </>
               )}
 
               {cnStats && (
                 <div className="contest-rank">
                   <div style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '0.5rem'}}>CODING NINJAS</div>
-                  <div className="contest-rank-title">Level {cnStats.level}</div>
-                  <div className="contest-rank-value">{cnStats.exp} <span style={{fontSize:'1rem'}}>EXP</span></div>
+                  <div className="contest-rank-value">{cnStats.solved || 0} <span style={{fontSize:'0.9rem', fontWeight: 500}}>Solved</span></div>
                 </div>
               )}
+
             </div>
           </div>
         </div>
