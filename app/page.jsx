@@ -34,6 +34,57 @@ export default function Home() {
             View Features
           </a>
         </div>
+
+        <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', alignItems: 'center', opacity: 0.9 }}>
+          <a 
+            href="https://neetcode.io/roadmap" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              color: 'var(--primary-text)', 
+              textDecoration: 'none', 
+              fontSize: '0.95rem', 
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.6rem 1.2rem',
+              background: 'rgba(99, 102, 241, 0.1)',
+              borderRadius: '12px',
+              border: '1px solid rgba(99, 102, 241, 0.2)',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={e => e.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)'}
+            onMouseOut={e => e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)'}
+          >
+            <i className="fas fa-map-marked-alt"></i>
+            NeetCode Roadmap
+          </a>
+          <a 
+            href="https://whimsical.com/dsa-patterns-47DQdVg8MiLZ1idPyveWFr?fbclid=PAT01DUARsH7pleHRuA2FlbQIxMABzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAadR3Mg0s2yVEXQe7aceIBbh7kr6Ng46jnEBvnc8atxGF-IaQ6-r85Cgz5U_7Q_aem_dZP1xYSDzaYfYUY6t7epPw" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              color: 'var(--primary-text)', 
+              textDecoration: 'none', 
+              fontSize: '0.95rem', 
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.6rem 1.2rem',
+              background: 'rgba(99, 102, 241, 0.1)',
+              borderRadius: '12px',
+              border: '1px solid rgba(99, 102, 241, 0.2)',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={e => e.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)'}
+            onMouseOut={e => e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)'}
+          >
+            <i className="fas fa-brain"></i>
+            Pattern Recognition
+          </a>
+        </div>
       </div>
 
       <div id="features" style={{ marginTop: '5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', width: '100%', maxWidth: '1200px' }}>
