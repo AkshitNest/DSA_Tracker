@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /auth/
 
-Sitemap: https://dsa-tracker-five-wine.vercel.app/sitemap.xml
+Sitemap: https://dsa-tracker-five-wine.vercel.app/sitemap1.xml
