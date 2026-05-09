@@ -65,14 +65,14 @@ export default function RootLayout({ children }) {
       <body className="dark-mode" suppressHydrationWarning>
         <Auth0Provider>
           <div id="app">
-            <SmoothScrollWrapper />
-            <BackgroundWrapper />
-            <Loader />
             <Suspense fallback={null}>
+              <SmoothScrollWrapper />
+              <BackgroundWrapper />
+              <Loader />
               <Navbar />
             </Suspense>
             <main>
-              <Suspense fallback={<Loader />}>
+              <Suspense fallback={<div style={{ textAlign: 'center', marginTop: '4rem' }}>Loading...</div>}>
                 {children}
               </Suspense>
             </main>
