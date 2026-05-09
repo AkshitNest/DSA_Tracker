@@ -96,7 +96,7 @@ export default function Navbar() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {!isLoading && !user && (
-            <a href="/api/auth/login" className="btn btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.9rem', textDecoration: 'none' }}>Log In</a>
+            <a href="/auth/login" className="btn btn-primary" style={{ padding: '0.5rem 1.5rem', fontSize: '0.9rem', textDecoration: 'none' }}>Log In</a>
           )}
 
           {!isLoading && user && (
@@ -106,7 +106,7 @@ export default function Navbar() {
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
               />
-              <a href="/api/auth/logout" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', textDecoration: 'none' }}>Logout</a>
+              <a href="/auth/logout" className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', textDecoration: 'none' }}>Logout</a>
             </>
           )}
 
