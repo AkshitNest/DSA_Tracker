@@ -71,6 +71,9 @@ export default function Leaderboard() {
                 <th style={{ padding: '1rem', textAlign: 'left' }}>User</th>
                 <th style={{ padding: '1rem', textAlign: 'center' }}>LC</th>
                 <th style={{ padding: '1rem', textAlign: 'center' }}>GFG</th>
+                <th style={{ padding: '1rem', textAlign: 'center' }}>CF</th>
+                <th style={{ padding: '1rem', textAlign: 'center' }}>CC</th>
+                <th style={{ padding: '1rem', textAlign: 'center' }}>CN</th>
                 <th style={{ padding: '1rem', textAlign: 'center' }}>Total Solved</th>
               </tr>
             </thead>
@@ -81,12 +84,15 @@ export default function Leaderboard() {
                   <td style={{ padding: '1rem', textAlign: 'left' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <img src={u.picture} alt={u.name} style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
-                      <span>{u.name}</span>
+                      <span style={{ fontWeight: 600 }}>{u.name}</span>
                     </div>
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'center' }}>{u.stats.leetcodeSolved}</td>
-                  <td style={{ padding: '1rem', textAlign: 'center' }}>{u.stats.gfgSolved}</td>
-                  <td style={{ padding: '1rem', textAlign: 'center', fontWeight: 900, color: 'var(--primary)' }}>{u.stats.totalSolved}</td>
+                  <td style={{ padding: '1rem', textAlign: 'center' }}>{u.stats.leetcodeSolved || 0}</td>
+                  <td style={{ padding: '1rem', textAlign: 'center' }}>{u.stats.gfgSolved || 0}</td>
+                  <td style={{ padding: '1rem', textAlign: 'center' }}>{u.stats.codeforcesSolved || 0}</td>
+                  <td style={{ padding: '1rem', textAlign: 'center' }}>{u.stats.codechefSolved || 0}</td>
+                  <td style={{ padding: '1rem', textAlign: 'center' }}>{u.stats.codingninjasSolved || 0}</td>
+                  <td style={{ padding: '1rem', textAlign: 'center', fontWeight: 900, color: 'var(--primary)', fontSize: '1.1rem' }}>{u.stats.totalSolved}</td>
                 </tr>
               ))}
             </tbody>
