@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation';
 
 const navLinks = [
   { href: '/profile', label: 'Dashboard' },
-  { href: '/sheets', label: 'Explore Sheets' },
   { href: '/leaderboard', label: 'Leaderboard' },
   { href: '/tracker', label: 'DSA Tracker' },
   { href: '/company-wise-questions', label: 'Companies' },
