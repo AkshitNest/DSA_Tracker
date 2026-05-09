@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Auth0Provider } from '@auth0/nextjs-auth0';
 import Navbar from '../components/Navbar';
 import BackgroundWrapper from '../components/BackgroundWrapper';
@@ -67,9 +68,13 @@ export default function RootLayout({ children }) {
             <SmoothScrollWrapper />
             <BackgroundWrapper />
             <Loader />
-            <Navbar />
+            <Suspense fallback={null}>
+              <Navbar />
+            </Suspense>
             <main>
-              {children}
+              <Suspense fallback={<Loader />}>
+                {children}
+              </Suspense>
             </main>
           </div>
         </Auth0Provider>
