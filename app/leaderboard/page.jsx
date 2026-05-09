@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useUser } from '@auth0/nextjs-auth0';
 
 export default function Leaderboard() {
+  const { user } = useUser();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Fetch leaderboard data
     fetch('/api/leaderboard')
       .then(res => res.json())
       .then(data => {
@@ -17,7 +20,16 @@ export default function Leaderboard() {
         console.error('Failed to fetch leaderboard:', err);
         setLoading(false);
       });
-  }, []);
+
+    // Record visit if logged in
+    if (user) {
+      fetch('/api/profile/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ handles: {} }) // Just update visit info without full sync if handles are empty
+      }).catch(err => console.error('Visit tracking failed', err));
+    }
+  }, [user]);
 
   if (loading) return <div style={{textAlign:'center', marginTop:'4rem'}}>Loading Leaderboard...</div>;
 

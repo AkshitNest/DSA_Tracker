@@ -12,12 +12,16 @@ export async function POST(req) {
     }
 
     await dbConnect();
-    const { handles: rawHandles } = await req.json();
+    const { handles: providedHandles } = await req.json();
+    
+    // Find existing user to get stored handles if none provided
+    const existingUser = await User.findOne({ userId: session.user.sub });
+    
     const handles = {
-      leetcode: rawHandles.leetcode?.trim() || '',
-      codechef: rawHandles.codechef?.trim() || '',
-      gfg: rawHandles.gfg?.trim() || '',
-      codingninjas: rawHandles.codingninjas?.trim() || ''
+      leetcode: (providedHandles?.leetcode || existingUser?.handles?.leetcode || '').trim(),
+      codechef: (providedHandles?.codechef || existingUser?.handles?.codechef || '').trim(),
+      gfg: (providedHandles?.gfg || existingUser?.handles?.gfg || '').trim(),
+      codingninjas: (providedHandles?.codingninjas || existingUser?.handles?.codingninjas || '').trim()
     };
 
     // 1. Fetch Stats from various platforms
@@ -90,9 +94,14 @@ export async function POST(req) {
           codingninjasSolved: cnSolved,
           totalSolved
         },
-        lastSynced: new Date()
+        lastSynced: new Date(),
+        lastVisited: new Date(),
       },
-      { upsert: true, new: true }
+      { 
+        upsert: true, 
+        new: true,
+        $inc: { visitCount: 1 } 
+      }
     );
 
     return NextResponse.json(updatedUser);

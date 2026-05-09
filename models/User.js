@@ -26,7 +26,9 @@ const UserSchema = new mongoose.Schema({
     totalSolved: { type: Number, default: 0 }, 
   },
   
-  lastSynced: { type: Date, default: Date.now }
+  lastSynced: { type: Date, default: Date.now },
+  lastVisited: { type: Date, default: Date.now },
+  visitCount: { type: Number, default: 0 }
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);
