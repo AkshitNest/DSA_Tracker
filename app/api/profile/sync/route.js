@@ -84,8 +84,12 @@ export async function POST(req) {
               }
             });
             const profileHtml = await profileRes.text();
-            const solvedMatch = profileHtml.match(/(\d+)\s+problems\s+solved/i);
-            if (solvedMatch) cfSolved = parseInt(solvedMatch[1]);
+            const solvedMatch = profileHtml.match(/(\d+)\s+problems\s+solved/i) || 
+                               profileHtml.match(/solved\s+problems\s*:\s*(\d+)/i) ||
+                               profileHtml.match(/(\d+)\s+Solved/i);
+            if (solvedMatch) {
+              cfSolved = parseInt(solvedMatch[1] || solvedMatch[2]);
+            }
           } catch (e) { console.error('CF Scrape fallback failed', e); }
         }
       } catch (e) { console.error('CF Sync failed', e); }
