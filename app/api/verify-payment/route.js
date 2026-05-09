@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { auth0 } from '../../../../lib/auth0.js';
+import { auth0 } from '../../../lib/auth0.js';
 
 export async function POST(req) {
   try {
