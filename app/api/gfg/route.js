@@ -30,8 +30,9 @@ export async function GET(req) {
     // Fallback: Check for data in script tags (common in Next.js/React SSR)
     if (score === 0 || problems === 0) {
       const scriptContent = $('script').map((i, el) => $(el).html()).get().join(' ');
-      const scoreMatch = scriptContent.match(/\"score\":(\d+)/);
-      const problemsMatch = scriptContent.match(/\"total_problems_solved\":(\d+)/);
+      // Handle both literal and escaped quotes
+      const scoreMatch = scriptContent.match(/\\?"score\\?":(\d+)/);
+      const problemsMatch = scriptContent.match(/\\?"total_problems_solved\\?":(\d+)/);
       if (scoreMatch) score = parseInt(scoreMatch[1]);
       if (problemsMatch) problems = parseInt(problemsMatch[1]);
     }

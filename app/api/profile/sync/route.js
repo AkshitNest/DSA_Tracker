@@ -77,10 +77,13 @@ export async function POST(req) {
         if (cfSolved === 0) {
           try {
             const profileRes = await fetch(`https://codeforces.com/profile/${handles.codeforces}`, {
-              headers: { 'User-Agent': 'Mozilla/5.0' }
+              headers: { 
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9'
+              }
             });
             const profileHtml = await profileRes.text();
-            const $ = cheerio.load(profileHtml);
             const solvedMatch = profileHtml.match(/(\d+)\s+problems\s+solved/i);
             if (solvedMatch) cfSolved = parseInt(solvedMatch[1]);
           } catch (e) { console.error('CF Scrape fallback failed', e); }
