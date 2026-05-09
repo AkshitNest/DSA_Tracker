@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useAppUser as useUser } from '../../src/hooks/useAppUser';
 import RazorpayCheckout from '../../components/RazorpayCheckout';
 
 export default function BuyMeCoffee() {

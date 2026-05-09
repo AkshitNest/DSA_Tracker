@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useAppUser as useUser } from '../../src/hooks/useAppUser';
 import { redirect } from 'next/navigation';
 
 export default function Tracker() {

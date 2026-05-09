@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from '@auth0/nextjs-auth0';
+import { useAppUser as useUser } from '../src/hooks/useAppUser';
 import { useEffect } from 'react';
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
               Go to Dashboard
             </a>
           ) : (
-            <a href="/profile" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', textDecoration: 'none', borderRadius: '9999px' }}>
+            <a href="/auth/login" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', textDecoration: 'none', borderRadius: '9999px' }}>
               Get Started Free
             </a>
           )}
@@ -97,7 +97,7 @@ export default function Home() {
       
       <div style={{ padding: '5rem 0', width: '100%', borderTop: '1px solid var(--border)' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Ready to optimize your DSA journey?</h2>
-        <a href="/profile" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem', borderRadius: '9999px', textDecoration: 'none' }}>Start Tracking Free</a>
+        <a href="/auth/login" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem', borderRadius: '9999px', textDecoration: 'none' }}>Start Tracking Free</a>
       </div>
     </div>
   );

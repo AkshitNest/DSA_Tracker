@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useAppUser as useUser } from '../src/hooks/useAppUser';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -60,6 +60,17 @@ export default function Navbar() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      await fetch('/api/auth/manual/logout', { method: 'POST' });
+    } catch (err) {
+      console.error('Logout error', err);
+    }
+    // Then redirect to Auth0 logout or standard logout
+    window.location.href = '/api/auth/logout';
+  };
+
   return (
     <header style={{ marginBottom: '2rem', position: 'relative' }}>
       <div className="logo">
@@ -94,7 +105,7 @@ export default function Navbar() {
             ))}
             {user && (
               <div className="mobile-only-logout" style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
-                <a href="/auth/logout" className="btn btn-secondary" style={{ width: '100%' }}>Logout</a>
+                <button onClick={handleLogout} className="btn btn-secondary" style={{ width: '100%' }}>Logout</button>
               </div>
             )}
           </nav>
@@ -112,7 +123,7 @@ export default function Navbar() {
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
               />
-              <a href="/auth/logout" className="btn btn-secondary logout-btn">Logout</a>
+              <button onClick={handleLogout} className="btn btn-secondary logout-btn">Logout</button>
             </div>
           )}
 

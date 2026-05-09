@@ -14,6 +14,9 @@ const UserSchema = new mongoose.Schema({
     codingninjas: { type: String, default: '' },
   },
   
+  // Manual Auth
+  password: { type: String },
+  
   // Solved Stats (Aggregated for Leaderboard)
   stats: {
     leetcodeSolved: { type: Number, default: 0 },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useAppUser as useUser } from '../../src/hooks/useAppUser';
 
 export default function Leaderboard() {
   const { user } = useUser();
