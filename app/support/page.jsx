@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
-import RazorpayCheckout from '../components/RazorpayCheckout';
+import RazorpayCheckout from '../../components/RazorpayCheckout';
 
 export default function BuyMeCoffee() {
   const { user } = useUser();
