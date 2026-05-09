@@ -26,7 +26,7 @@ export default function Home() {
               Go to Dashboard
             </a>
           ) : (
-            <a href="/auth/login" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', textDecoration: 'none', borderRadius: '9999px' }}>
+            <a href="/profile" className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', textDecoration: 'none', borderRadius: '9999px' }}>
               Get Started Free
             </a>
           )}
@@ -97,7 +97,7 @@ export default function Home() {
       
       <div style={{ padding: '5rem 0', width: '100%', borderTop: '1px solid var(--border)' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Ready to optimize your DSA journey?</h2>
-        <a href="/auth/login" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem', borderRadius: '9999px', textDecoration: 'none' }}>Start Tracking Free</a>
+        <a href="/profile" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem', borderRadius: '9999px', textDecoration: 'none' }}>Start Tracking Free</a>
       </div>
     </div>
   );
