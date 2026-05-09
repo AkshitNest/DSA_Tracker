@@ -98,5 +98,15 @@
     "category": "Complete DSA",
     "color": "#d946ef",
     "officialUrl": "https://apnacollege.in"
+  },
+  {
+    "id": "dp-mastery",
+    "title": "DP Mastery Sheet",
+    "description": "Conquer your fear of Dynamic Programming with this pattern-wise curated list.",
+    "author": "Aditya Verma",
+    "totalQuestions": 67,
+    "category": "Topic Specific",
+    "color": "#f97316",
+    "officialUrl": "https://www.youtube.com/playlist?list=PL_z_8CaSLPWekqHOEtOJzhKn9Q35x4O0f"
   }
 ]
