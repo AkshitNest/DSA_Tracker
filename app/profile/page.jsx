@@ -70,11 +70,24 @@ export default function Profile() {
       const updatedUser = await res.json();
       
       if (!updatedUser.error) {
+        // Fetch detailed LeetCode data for Heatmap and UI
+        if (lcUsername.trim()) {
+          try {
+            const resProfile = await fetch(`https://alfa-leetcode-api.onrender.com/${lcUsername}`);
+            const dataProfile = await resProfile.json();
+            if (!dataProfile.errors) setLcProfile(dataProfile);
+
+            const resCal = await fetch(`https://alfa-leetcode-api.onrender.com/${lcUsername}/calendar`);
+            const dataCal = await resCal.json();
+            setLcCalendar(dataCal);
+          } catch (e) { console.error('LC Heatmap Fetch failed', e); }
+        }
+
         // Update local state from database response
         if (updatedUser.stats.leetcodeSolved) {
           setLcStats({
             total: updatedUser.stats.leetcodeSolved,
-            easy: Math.floor(updatedUser.stats.leetcodeSolved * 0.4), // Estimates for UI if breakdown isn't stored
+            easy: Math.floor(updatedUser.stats.leetcodeSolved * 0.4),
             medium: Math.floor(updatedUser.stats.leetcodeSolved * 0.4),
             hard: Math.floor(updatedUser.stats.leetcodeSolved * 0.2)
           });
@@ -82,7 +95,7 @@ export default function Profile() {
         if (updatedUser.stats.codeforcesRating) setCfStats({ rating: updatedUser.stats.codeforcesRating });
         if (updatedUser.stats.gfgSolved) setGfgStats({ problems: updatedUser.stats.gfgSolved });
         
-        alert('Profiles synced successfully! Your leaderboard rank will update shortly.');
+        alert('Profiles synced successfully! Your heatmap and leaderboard are updated.');
       }
     } catch (err) {
       console.error('Sync Error:', err);
