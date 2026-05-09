@@ -2,7 +2,7 @@
 import React from 'react';
 import useFetch from '../src/hooks/useFetch';
 
-function ProgressBar({ value }: { value: number }) {
+function ProgressBar({ value }) {
   return (
     <div style={{background:'var(--input-bg)', borderRadius:12, padding:6}}>
       <div style={{width: `${value}%`, background: 'linear-gradient(90deg,var(--heat-2),var(--heat-4))', height: 12, borderRadius:8}} />
@@ -20,7 +20,7 @@ export default function CompanyDashboard() {
 
   return (
     <div className="dashboard-grid">
-      {Object.entries(companies).map(([company, stats]: any) => (
+      {Object.entries(companies).map(([company, stats]) => (
         <div key={company} className="glass-card">
           <h2>{company} Prep</h2>
           <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
@@ -38,7 +38,7 @@ export default function CompanyDashboard() {
 
           <h4>Weak Topics</h4>
           <div>
-            {(stats.weaknesses || []).slice(0,5).map((w: any) => (
+            {(stats.weaknesses || []).slice(0,5).map((w) => (
               <div key={w.topic} style={{display:'flex', justifyContent:'space-between', alignItems:'center', gap:8, marginBottom:8}}>
                 <div style={{fontWeight:700}}>{w.topic}</div>
                 <div style={{width:120}}>

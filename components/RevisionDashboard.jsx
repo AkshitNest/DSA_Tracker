@@ -2,15 +2,15 @@
 import React, { useState } from 'react';
 import useFetch from '../src/hooks/useFetch';
 
-function formatDate(d?: string | Date | null) {
+function formatDate(d) {
   if (!d) return '-';
   const dt = new Date(d);
   return dt.toLocaleDateString();
 }
 
 export default function RevisionDashboard() {
-  const [topic, setTopic] = useState<string | null>(null);
-  const [difficulty, setDifficulty] = useState<string | null>(null);
+  const [topic, setTopic] = useState(null);
+  const [difficulty, setDifficulty] = useState(null);
 
   const qs = new URLSearchParams();
   if (topic) qs.set('topic', topic);
@@ -67,13 +67,13 @@ export default function RevisionDashboard() {
       <section className="glass-card">
         <h2>Notifications</h2>
         <div style={{display: 'grid', gap: '0.75rem'}}>
-          {dueToday.slice(0,5).map((q: any) => (
+          {dueToday.slice(0,5).map((q) => (
             <div key={q._id} style={{padding:'0.8rem', borderRadius:12, background:'var(--input-bg)'}}>
               <strong>Revise {q.title || q.name} today</strong>
               <div style={{color: 'var(--primary)', marginTop:4}}>{q.topic} • {q.difficulty}</div>
             </div>
           ))}
-          {overdue.slice(0,5).map((q: any) => {
+          {overdue.slice(0,5).map((q) => {
             const days = Math.ceil((new Date().getTime() - new Date(q.nextRevisionDate).getTime()) / (1000 * 60 * 60 * 24));
             return (
               <div key={q._id} style={{padding:'0.8rem', borderRadius:12, background:'rgba(255,240,240,0.6)'}}>
@@ -92,7 +92,7 @@ export default function RevisionDashboard() {
             <tr><th>Problem</th><th>Topic</th><th>Difficulty</th><th>Next Revision</th><th>Revisions</th></tr>
           </thead>
           <tbody>
-            {upcoming.concat(dueToday).map((q: any) => (
+            {upcoming.concat(dueToday).map((q) => (
               <tr key={q._id}>
                 <td>{q.title || q.name}</td>
                 <td>{q.topic || 'General'}</td>

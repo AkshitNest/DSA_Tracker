@@ -1,20 +1,18 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '../../../../lib/mongodb';
-import Question from '../../../../models/Question';
-import { auth0 } from '../../../../lib/auth0';
-
-type Req = Request;
+import dbConnect from '../../../lib/mongodb';
+import Question from '../../../models/Question';
+import { auth0 } from '../../../lib/auth0';
 
 const scheduleDays = [0, 1, 3, 7, 15, 30];
 
-function addDays(d: Date, days: number) {
+function addDays(d, days) {
   const dt = new Date(d);
   dt.setDate(dt.getDate() + days);
   dt.setHours(0, 0, 0, 0);
   return dt;
 }
 
-export async function GET(req: Req) {
+export async function GET(req) {
   try {
     const session = await auth0.getSession();
     if (!session || !session.user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -29,7 +27,7 @@ export async function GET(req: Req) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const baseQuery: any = { userId: session.user.sub };
+    const baseQuery = { userId: session.user.sub };
     if (topic) baseQuery.topic = topic;
     if (difficulty) baseQuery.difficulty = difficulty;
     if (company) baseQuery.companies = company;
@@ -45,12 +43,12 @@ export async function GET(req: Req) {
     const completion = dueToday.length === 0 ? 100 : Math.round((revisedToday.length / dueToday.length) * 100);
 
     return NextResponse.json({ dueToday, overdue, upcoming, completion });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-export async function POST(req: Req) {
+export async function POST(req) {
   try {
     const session = await auth0.getSession();
     if (!session || !session.user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -61,7 +59,7 @@ export async function POST(req: Req) {
 
     await dbConnect();
 
-    const q: any = await Question.findOne({ _id: id, userId: session.user.sub });
+    const q = await Question.findOne({ _id: id, userId: session.user.sub });
     if (!q) return NextResponse.json({ error: 'Question not found' }, { status: 404 });
 
     if (action === 'markRevised') {
@@ -84,7 +82,7 @@ export async function POST(req: Req) {
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from 'react';
 
-export default function useFetch<T = any>(url: string | null, deps: any[] = []) {
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(!!url);
-  const [error, setError] = useState<string | null>(null);
+export default function useFetch(url, deps = []) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(!!url);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
