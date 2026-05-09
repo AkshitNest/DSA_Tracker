@@ -49,91 +49,44 @@ export default function Profile() {
   const handleSyncAll = async () => {
     setSyncing(true);
     
-    // Save to localstorage
-    localStorage.setItem('dsa-profiles', JSON.stringify({
-      leetcode: lcUsername, codeforces: cfUsername, codechef: ccUsername, gfg: gfgUsername, codingninjas: cnUsername
-    }));
+    const handles = {
+      leetcode: lcUsername,
+      codeforces: cfUsername,
+      codechef: ccUsername,
+      gfg: gfgUsername,
+      codingninjas: cnUsername
+    };
 
-    // Fetch LeetCode
-    if (lcUsername.trim()) {
-      try {
-        const resProfile = await fetch(`https://alfa-leetcode-api.onrender.com/${lcUsername}`);
-        if (resProfile.ok) {
-          const dataProfile = await resProfile.json();
-          if (!dataProfile.errors) {
-            if (!dataProfile.name && dataProfile.username) dataProfile.name = dataProfile.username;
-            setLcProfile(dataProfile);
-            
-            const resSolved = await fetch(`https://alfa-leetcode-api.onrender.com/${lcUsername}/solved`);
-            const dataSolved = await resSolved.json();
-            if (dataSolved.solvedProblem !== undefined) {
-              setLcStats({
-                total: dataSolved.solvedProblem,
-                easy: dataSolved.easySolved, medium: dataSolved.mediumSolved, hard: dataSolved.hardSolved
-              });
-            }
-            
-            try {
-              const resCal = await fetch(`https://alfa-leetcode-api.onrender.com/${lcUsername}/calendar`);
-              setLcCalendar(await resCal.json());
-            } catch(e){}
-          }
-        }
-      } catch (err) { console.error('LC Fetch Error', err); }
-    }
+    // Save to localstorage for UI persistence
+    localStorage.setItem('dsa-profiles', JSON.stringify(handles));
 
-    // Fetch Codeforces (Real API)
-    if (cfUsername.trim()) {
-      try {
-        const resCf = await fetch(`https://codeforces.com/api/user.info?handles=${cfUsername}`);
-        const dataCf = await resCf.json();
-        if (dataCf.status === 'OK') {
-          setCfStats(dataCf.result[0]);
-        }
-      } catch (err) { console.error('CF Fetch Error', err); }
-    }
-
-    // Fetch CodeChef (via new internal scraping API)
-    if (ccUsername.trim()) {
-      try {
-        const resCc = await fetch(`/api/codechef?handle=${ccUsername}`);
-        const dataCc = await resCc.json();
-        if (!dataCc.error) {
-          setCcStats({
-            stars: dataCc.stars || 1,
-            rating: dataCc.rating || 0,
-            maxRating: dataCc.maxRating || 0
+    try {
+      const res = await fetch('/api/profile/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ handles })
+      });
+      
+      const updatedUser = await res.json();
+      
+      if (!updatedUser.error) {
+        // Update local state from database response
+        if (updatedUser.stats.leetcodeSolved) {
+          setLcStats({
+            total: updatedUser.stats.leetcodeSolved,
+            easy: Math.floor(updatedUser.stats.leetcodeSolved * 0.4), // Estimates for UI if breakdown isn't stored
+            medium: Math.floor(updatedUser.stats.leetcodeSolved * 0.4),
+            hard: Math.floor(updatedUser.stats.leetcodeSolved * 0.2)
           });
         }
-      } catch (err) { console.error('CC Fetch Error', err); }
-    }
-
-    // Fetch GFG (via new internal scraping API)
-    if (gfgUsername.trim()) {
-      try {
-        const resGfg = await fetch(`/api/gfg?handle=${gfgUsername}`);
-        const dataGfg = await resGfg.json();
-        if (!dataGfg.error) {
-          setGfgStats({
-            score: dataGfg.score || 0,
-            problems: dataGfg.problems || 0
-          });
-        }
-      } catch (err) { console.error('GFG Fetch Error', err); }
-    }
-
-    // Fetch Coding Ninjas (via new internal API)
-    if (cnUsername.trim()) {
-      try {
-        const resCn = await fetch(`/api/codingninjas?handle=${cnUsername}`);
-        const dataCn = await resCn.json();
-        if (!dataCn.error) {
-          setCnStats({
-            level: dataCn.level || 1,
-            exp: dataCn.exp || 0
-          });
-        }
-      } catch (err) { console.error('CN Fetch Error', err); }
+        if (updatedUser.stats.codeforcesRating) setCfStats({ rating: updatedUser.stats.codeforcesRating });
+        if (updatedUser.stats.gfgSolved) setGfgStats({ problems: updatedUser.stats.gfgSolved });
+        
+        alert('Profiles synced successfully! Your leaderboard rank will update shortly.');
+      }
+    } catch (err) {
+      console.error('Sync Error:', err);
+      alert('Failed to sync with database.');
     }
 
     setSyncing(false);

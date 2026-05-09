@@ -6,10 +6,12 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 const navLinks = [
-  { href: '/profile', label: 'Profile Dashboard' },
+  { href: '/profile', label: 'Dashboard' },
+  { href: '/sheets', label: 'Explore Sheets' },
+  { href: '/leaderboard', label: 'Leaderboard' },
   { href: '/tracker', label: 'DSA Tracker' },
-  { href: '/company-wise-questions', label: 'Company-Wise Questions' },
-  { href: '/support', label: '☕ Buy Me a Coffee', special: true },
+  { href: '/company-wise-questions', label: 'Companies' },
+  { href: '/support', label: '☕ Support', special: true },
 ];
 
 function NavLink({ href, label, pathname, special }) {

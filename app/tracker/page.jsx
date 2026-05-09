@@ -11,8 +11,8 @@ export default function Tracker() {
   // Form State
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    name: '', platform: 'LeetCode', tags: '', approach: '',
-    timeComplexity: '', confidence: '3', lastRevised: '', mistakes: ''
+    title: '', platform: 'LeetCode', tags: '', approach: '',
+    timeComplexity: '', confidence: '3', lastRevisionDate: '', mistakes: ''
   });
 
   // Filter State
@@ -42,7 +42,7 @@ export default function Tracker() {
   }, [undoToast]);
 
   useEffect(() => {
-    setFormData(prev => ({ ...prev, lastRevised: new Date().toISOString().split('T')[0] }));
+    setFormData(prev => ({ ...prev, lastRevisionDate: new Date().toISOString().split('T')[0] }));
   }, []);
 
   useEffect(() => {
@@ -72,15 +72,15 @@ export default function Tracker() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newQuestion = {
-      name: formData.name,
+      title: formData.title,
       platform: formData.platform,
       tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
       approach: formData.approach,
       timeComplexity: formData.timeComplexity,
       confidence: parseInt(formData.confidence),
-      lastRevised: formData.lastRevised,
+      lastRevisionDate: formData.lastRevisionDate,
       mistakes: formData.mistakes,
-      nextRevision: calculateNextRevision(formData.confidence, formData.lastRevised)
+      nextRevisionDate: calculateNextRevision(formData.confidence, formData.lastRevisionDate)
     };
 
     try {
@@ -111,8 +111,8 @@ export default function Tracker() {
     
     setEditingId(null);
     setFormData({
-      name: '', platform: 'LeetCode', tags: '', approach: '',
-      timeComplexity: '', confidence: '3', lastRevised: new Date().toISOString().split('T')[0], mistakes: ''
+        title: '', platform: 'LeetCode', tags: '', approach: '',
+        timeComplexity: '', confidence: '3', lastRevisionDate: new Date().toISOString().split('T')[0], mistakes: ''
     });
   };
 
@@ -122,9 +122,9 @@ export default function Tracker() {
     if (!q) return;
     setEditingId(q.id);
     setFormData({
-      name: q.name, platform: q.platform, tags: q.tags.join(', '),
+      title: q.title || q.name, platform: q.platform, tags: (q.tags || []).join(', '),
       approach: q.approach, timeComplexity: q.timeComplexity,
-      confidence: q.confidence.toString(), lastRevised: q.lastRevised, mistakes: q.mistakes
+      confidence: q.confidence ? q.confidence.toString() : '3', lastRevisionDate: q.lastRevisionDate || q.lastRevised, mistakes: q.mistakes
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -145,7 +145,7 @@ export default function Tracker() {
 
     // 3. Show Undo Toast
     setUndoToast({
-      message: `Deleted "${qToDelete.name}"`,
+      message: `Deleted "${qToDelete.title || qToDelete.name}"`,
       pendingId: id,
       question: qToDelete
     });
@@ -179,8 +179,8 @@ export default function Tracker() {
     
     const updatedQuestion = {
       ...restProps,
-      lastRevised: today,
-      nextRevision: calculateNextRevision(q.confidence, today)
+      lastRevisionDate: today,
+      nextRevisionDate: calculateNextRevision(q.confidence, today)
     };
 
     try {
@@ -190,9 +190,9 @@ export default function Tracker() {
         body: JSON.stringify(updatedQuestion)
       });
       const updated = await res.json();
-      if (!updated.error) {
+        if (!updated.error) {
         setQuestions(questions.map(question => question.id === id ? updated : question));
-        if (q.lastRevised === today) {
+        if ((q.lastRevisionDate || q.lastRevised) === today) {
           alert('Question is already revised for today!');
         } else {
           alert('Successfully marked as revised!');
@@ -209,7 +209,9 @@ export default function Tracker() {
   const today = new Date().toISOString().split('T')[0];
 
   let filtered = questions.filter(q => {
-    const matchSearch = q.name.toLowerCase().includes(search.toLowerCase()) || q.tags.some(t => t.toLowerCase().includes(search.toLowerCase()));
+    const title = (q.title || q.name || '').toLowerCase();
+    const tagsList = q.tags || [];
+    const matchSearch = title.includes(search.toLowerCase()) || tagsList.some(t => t.toLowerCase().includes(search.toLowerCase()));
     const matchPlat = filterPlat === 'All' || q.platform === filterPlat;
     let matchConf = true;
     if (filterConf === 'Weak') matchConf = q.confidence <= 2;
@@ -219,8 +221,10 @@ export default function Tracker() {
   });
 
   filtered = filtered.sort((a, b) => {
-    const d1 = new Date(a.nextRevision);
-    const d2 = new Date(b.nextRevision);
+    const n1 = a.nextRevisionDate || a.nextRevision;
+    const n2 = b.nextRevisionDate || b.nextRevision;
+    const d1 = n1 ? new Date(n1) : new Date(0);
+    const d2 = n2 ? new Date(n2) : new Date(0);
     return sortAsc ? d1 - d2 : d2 - d1;
   });
 
@@ -232,7 +236,7 @@ export default function Tracker() {
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Question Name</label>
-              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="e.g., Two Sum" />
+              <input type="text" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g., Two Sum" />
             </div>
             <div className="form-group">
               <label>Platform</label>
@@ -265,7 +269,7 @@ export default function Tracker() {
             </div>
             <div className="form-group">
               <label>Last Revised</label>
-              <input type="date" required value={formData.lastRevised} onChange={e => setFormData({...formData, lastRevised: e.target.value})} />
+              <input type="date" required value={formData.lastRevisionDate} onChange={e => setFormData({...formData, lastRevisionDate: e.target.value})} />
             </div>
             <div className="form-group">
               <label>Mistake Notes</label>
@@ -304,12 +308,12 @@ export default function Tracker() {
               <tbody>
                 {filtered.map(q => (
                   <tr key={q.id} className="clickable-row" onClick={() => setModalData(q)}>
-                    <td><strong>{q.name}</strong></td>
+                    <td><strong>{q.title || q.name}</strong></td>
                     <td>{q.platform}</td>
                     <td>{q.tags.map(t => <span key={t} className="badge badge-tag">{t}</span>)}</td>
                     <td><span className={`badge badge-${q.confidence <= 2 ? 'weak' : q.confidence >= 4 ? 'strong' : 'medium'}`}>Lvl {q.confidence}</span></td>
-                    <td>{q.lastRevised}</td>
-                    <td>{q.nextRevision} {q.nextRevision <= today && <span className="badge revise-now">Revise Now</span>}</td>
+                    <td>{q.lastRevisionDate || q.lastRevised}</td>
+                    <td>{q.nextRevisionDate || q.nextRevision} {(q.nextRevisionDate || q.nextRevision) <= today && <span className="badge revise-now">Revise Now</span>}</td>
                     <td className="action-btns">
                       <button className="btn-icon check" onClick={(e) => markRevised(q.id, e)}><i className="fas fa-check-circle"></i></button>
                       <button className="btn-icon edit" onClick={(e) => editQuestion(q.id, e)}><i className="fas fa-edit"></i></button>
@@ -328,7 +332,7 @@ export default function Tracker() {
         <div className="modal" onClick={(e) => { if (e.target.className === 'modal') setModalData(null); }}>
           <div className="modal-content glass-card">
             <span className="close-btn" onClick={() => setModalData(null)}>&times;</span>
-            <h2>{modalData.name}</h2>
+            <h2>{modalData.title || modalData.name}</h2>
             <div className="modal-body">
               <h3>Approach</h3><p>{modalData.approach || 'No approach notes.'}</p>
               <h3>Mistakes & Notes</h3><p>{modalData.mistakes || 'No mistake notes.'}</p>

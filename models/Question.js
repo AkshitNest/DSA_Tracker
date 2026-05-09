@@ -5,7 +5,12 @@ const QuestionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  // Backwards-compatible: `name` was previously used. New canonical field is `title`.
   name: {
+    type: String,
+    required: false,
+  },
+  title: {
     type: String,
     required: true,
   },
@@ -32,13 +37,18 @@ const QuestionSchema = new mongoose.Schema({
     min: 1,
     max: 5,
   },
-  lastRevised: {
-    type: String, // Storing as YYYY-MM-DD
-    required: true,
+  // Smart revision fields
+  lastRevisionDate: {
+    type: Date,
+    default: null,
   },
-  nextRevision: {
-    type: String, // Storing as YYYY-MM-DD
-    required: true,
+  nextRevisionDate: {
+    type: Date,
+    default: null,
+  },
+  solvedAt: {
+    type: Date,
+    default: null,
   },
   mistakes: {
     type: String,
