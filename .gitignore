@@ -21,6 +21,7 @@ build/
 # ===== Data Files (large generated files, not needed in repo) =====
 data/*
 !data/sheets.json
+!data/sheet-questions.json
 scripts/*.cjs
 
 # ===== Logs =====
