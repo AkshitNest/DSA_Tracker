@@ -17,8 +17,12 @@ export async function POST(req) {
     let leetcodeSolved = 0;
     let cfSolved = 0;
     let cfRating = 0;
+    let cfMaxRating = 0;
+    let cfRank = 'unrated';
     let ccSolved = 0;
     let ccRating = 0;
+    let ccMaxRating = 0;
+    let ccStars = 1;
     let gfgSolved = 0;
     let cnSolved = 0;
 
@@ -40,7 +44,11 @@ export async function POST(req) {
         ]);
         
         const infoData = await infoRes.json();
-        if (infoData.status === 'OK') cfRating = infoData.result[0].rating || 0;
+        if (infoData.status === 'OK') {
+          cfRating = infoData.result[0].rating || 0;
+          cfMaxRating = infoData.result[0].maxRating || 0;
+          cfRank = infoData.result[0].rank || 'unrated';
+        }
 
         const statusData = await statusRes.json();
         if (statusData.status === 'OK') {
@@ -63,13 +71,15 @@ export async function POST(req) {
       } catch (e) { console.error('GFG Sync failed', e); }
     }
 
-    // --- CodeChef (Mock/Proxy) ---
+    // --- CodeChef ---
     if (handles.codechef) {
       try {
         const res = await fetch(`${process.env.AUTH0_BASE_URL}/api/codechef?handle=${handles.codechef}`);
         const data = await res.json();
         ccSolved = data.solved || 0;
         ccRating = data.rating || 0;
+        ccMaxRating = data.maxRating || 0;
+        ccStars = data.stars || 1;
       } catch (e) { console.error('CodeChef Sync failed', e); }
     }
 
@@ -97,8 +107,12 @@ export async function POST(req) {
         stats: {
           leetcodeSolved,
           codeforcesRating: cfRating,
+          codeforcesMaxRating: cfMaxRating,
+          codeforcesRank: cfRank,
           codeforcesSolved: cfSolved,
           codechefRating: ccRating,
+          codechefMaxRating: ccMaxRating,
+          codechefStars: ccStars,
           codechefSolved: ccSolved,
           gfgSolved,
           codingninjasSolved: cnSolved,
