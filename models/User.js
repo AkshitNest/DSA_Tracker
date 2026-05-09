@@ -9,7 +9,6 @@ const UserSchema = new mongoose.Schema({
   // Platform Handles
   handles: {
     leetcode: { type: String, default: '' },
-    codeforces: { type: String, default: '' },
     codechef: { type: String, default: '' },
     gfg: { type: String, default: '' },
     codingninjas: { type: String, default: '' },
@@ -18,10 +17,6 @@ const UserSchema = new mongoose.Schema({
   // Solved Stats (Aggregated for Leaderboard)
   stats: {
     leetcodeSolved: { type: Number, default: 0 },
-    codeforcesRating: { type: Number, default: 0 },
-    codeforcesMaxRating: { type: Number, default: 0 },
-    codeforcesRank: { type: String, default: 'unrated' },
-    codeforcesSolved: { type: Number, default: 0 },
     codechefRating: { type: Number, default: 0 },
     codechefMaxRating: { type: Number, default: 0 },
     codechefStars: { type: Number, default: 1 },

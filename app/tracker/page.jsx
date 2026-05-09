@@ -243,7 +243,7 @@ export default function Tracker() {
               <select required value={formData.platform} onChange={e => setFormData({...formData, platform: e.target.value})}>
                 <option value="LeetCode">LeetCode</option>
                 <option value="GFG">GeeksForGeeks</option>
-                <option value="Codeforces">Codeforces</option>
+                <option value="CodeChef">CodeChef</option>
                 <option value="CodingNinjas">Coding Ninjas</option>
                 <option value="Other">Other</option>
               </select>
@@ -291,7 +291,7 @@ export default function Tracker() {
                 <option value="All">All Confidence</option><option value="Weak">Weak (1-2)</option><option value="Medium">Medium (3)</option><option value="Strong">Strong (4-5)</option>
               </select>
               <select value={filterPlat} onChange={e => setFilterPlat(e.target.value)}>
-                <option value="All">All Platforms</option><option value="LeetCode">LeetCode</option><option value="GFG">GFG</option><option value="Codeforces">Codeforces</option><option value="CodingNinjas">Coding Ninjas</option><option value="Other">Other</option>
+                <option value="All">All Platforms</option><option value="LeetCode">LeetCode</option><option value="GFG">GFG</option><option value="CodeChef">CodeChef</option><option value="CodingNinjas">Coding Ninjas</option><option value="Other">Other</option>
               </select>
             </div>
           </div>

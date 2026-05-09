@@ -10,7 +10,6 @@ export default function Profile() {
   
   // Platform Usernames
   const [lcUsername, setLcUsername] = useState('');
-  const [cfUsername, setCfUsername] = useState('');
   const [ccUsername, setCcUsername] = useState('');
   const [gfgUsername, setGfgUsername] = useState('');
   const [cnUsername, setCnUsername] = useState('');
@@ -20,7 +19,6 @@ export default function Profile() {
   const [lcProfile, setLcProfile] = useState(null);
   const [lcCalendar, setLcCalendar] = useState(null);
   
-  const [cfStats, setCfStats] = useState(null);
   const [ccStats, setCcStats] = useState(null);
   const [gfgStats, setGfgStats] = useState(null);
   const [cnStats, setCnStats] = useState(null);
@@ -41,7 +39,6 @@ export default function Profile() {
     .then(dbUser => {
       if (dbUser.handles) {
         setLcUsername(dbUser.handles.leetcode || '');
-        setCfUsername(dbUser.handles.codeforces || '');
         setCcUsername(dbUser.handles.codechef || '');
         setGfgUsername(dbUser.handles.gfg || '');
         setCnUsername(dbUser.handles.codingninjas || '');
@@ -49,7 +46,6 @@ export default function Profile() {
       if (dbUser.stats) {
         const s = dbUser.stats;
         if (s.leetcodeSolved) setLcStats({ total: s.leetcodeSolved, easy: Math.floor(s.leetcodeSolved * 0.4), medium: Math.floor(s.leetcodeSolved * 0.4), hard: Math.floor(s.leetcodeSolved * 0.2) });
-        if (s.codeforcesSolved) setCfStats({ rating: s.codeforcesRating, maxRating: s.codeforcesMaxRating, rank: s.codeforcesRank, solved: s.codeforcesSolved });
         if (s.codechefSolved) setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved });
         if (s.gfgSolved) setGfgStats({ problems: s.gfgSolved });
         if (s.codingninjasSolved) setCnStats({ solved: s.codingninjasSolved });
@@ -68,7 +64,6 @@ export default function Profile() {
     
     const handles = {
       leetcode: lcUsername,
-      codeforces: cfUsername,
       codechef: ccUsername,
       gfg: gfgUsername,
       codingninjas: cnUsername
@@ -104,7 +99,6 @@ export default function Profile() {
         if (updatedUser.stats) {
           const s = updatedUser.stats;
           setLcStats({ total: s.leetcodeSolved, easy: Math.floor(s.leetcodeSolved * 0.4), medium: Math.floor(s.leetcodeSolved * 0.4), hard: Math.floor(s.leetcodeSolved * 0.2) });
-          setCfStats({ rating: s.codeforcesRating, maxRating: s.codeforcesMaxRating, rank: s.codeforcesRank, solved: s.codeforcesSolved });
           setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved });
           setGfgStats({ problems: s.gfgSolved });
           setCnStats({ solved: s.codingninjasSolved });
@@ -120,7 +114,7 @@ export default function Profile() {
     setSyncing(false);
   };
 
-  const activeAvatar = customAvatar || (lcProfile && lcProfile.avatar) || (cfStats && cfStats.titlePhoto) || user.picture || 'https://cdn.auth0.com/avatars/default.png';
+  const activeAvatar = customAvatar || (lcProfile && lcProfile.avatar) || user.picture || 'https://cdn.auth0.com/avatars/default.png';
 
   const DonutChart = ({ easy, medium, hard, total }) => {
     const radius = 40;
@@ -180,7 +174,6 @@ export default function Profile() {
         <h2 style={{fontSize: '1.2rem', marginBottom: '1.5rem'}}><i className="fas fa-link"></i> Link Platform Profiles</h2>
         <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem'}}>
           <input type="text" placeholder="LeetCode Username" value={lcUsername} onChange={e => setLcUsername(e.target.value)} />
-          <input type="text" placeholder="Codeforces Handle" value={cfUsername} onChange={e => setCfUsername(e.target.value)} />
           <input type="text" placeholder="CodeChef Username" value={ccUsername} onChange={e => setCcUsername(e.target.value)} />
           <input type="text" placeholder="GFG Username" value={gfgUsername} onChange={e => setGfgUsername(e.target.value)} />
           <input type="text" placeholder="Coding Ninjas Username" value={cnUsername} onChange={e => setCnUsername(e.target.value)} />
@@ -190,14 +183,14 @@ export default function Profile() {
         </button>
       </section>
 
-      {(lcStats || cfStats || ccStats || gfgStats || cnStats) && (
+      {(lcStats || ccStats || gfgStats || cnStats) && (
         <div className="codolio-dashboard">
           {/* Left Column: User Profile Card */}
           <div className="profile-card glass-card" style={{textAlign: 'center', height: 'fit-content'}}>
             <div className="avatar-wrapper" style={{position: 'relative', display: 'inline-block', marginBottom: '1rem'}}>
               <img src={activeAvatar} alt="Profile" style={{width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--border)'}} />
             </div>
-            <h2 style={{fontSize: '1.5rem', marginBottom: '0.2rem'}}>{(lcProfile && lcProfile.name) || (cfStats && cfStats.firstName) || user.name || "Coder"}</h2>
+            <h2 style={{fontSize: '1.5rem', marginBottom: '0.2rem'}}>{(lcProfile && lcProfile.name) || user.name || "Coder"}</h2>
             
             {lcProfile && lcProfile.about && (
               <p style={{fontSize: '0.9rem', color: 'var(--text-color)', opacity: 0.8, marginBottom: '1rem', padding: '0 1rem'}}>
@@ -209,7 +202,6 @@ export default function Profile() {
               <h4 style={{marginBottom: '1rem', fontSize: '0.9rem', color: '#64748b'}}>Connected Accounts</h4>
               <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
                 {lcUsername && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-code" style={{color: '#f59e0b', width: '20px'}}></i> LeetCode</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
-                {cfUsername && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-chart-bar" style={{color: '#3b82f6', width: '20px'}}></i> Codeforces</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
                 {ccUsername && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-utensils" style={{color: '#8b5cf6', width: '20px'}}></i> CodeChef</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
                 {gfgUsername && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-book" style={{color: '#10b981', width: '20px'}}></i> GFG</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
                 {cnUsername && <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}><span style={{fontWeight: '500', fontSize: '0.9rem'}}><i className="fas fa-user-ninja" style={{color: '#ef4444', width: '20px'}}></i> Coding Ninjas</span><i className="fas fa-check-circle" style={{color: 'var(--success)', fontSize: '0.9rem'}}></i></div>}
@@ -261,19 +253,7 @@ export default function Profile() {
             <div className="glass-card">
               <h4 style={{textAlign: 'center', marginBottom: '2rem'}}>Platform Overview</h4>
               
-              {cfStats && (
-                <>
-                  <div className="contest-rank">
-                    <div style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 'bold', marginBottom: '0.5rem'}}>CODEFORCES</div>
-                    <div className="contest-rank-value">{cfStats.solved || 0} <span style={{fontSize:'0.9rem', fontWeight: 500}}>Solved</span></div>
-                    <div style={{fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 'bold', marginBottom: '0.2rem'}}>
-                      Rating: {cfStats.rating || 0} <span style={{color: '#64748b', fontWeight: 'normal'}}>(max: {cfStats.maxRating || 0})</span>
-                    </div>
-                    <div style={{fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b'}}>{cfStats.rank || 'unrated'}</div>
-                  </div>
-                  <hr style={{border: 0, borderTop: '1px solid var(--border)', margin: '1.5rem 0'}} />
-                </>
-              )}
+
 
               {ccStats && (
                 <>

@@ -17,7 +17,7 @@ export default function Home() {
         </h1>
         
         <p style={{ fontSize: '1.1rem', color: 'var(--text-color)', opacity: 0.8, marginBottom: '2.5rem', lineHeight: 1.6 }}>
-          The ultimate all-in-one dashboard for competitive programmers and software engineers. Sync your profiles from LeetCode, Codeforces, CodeChef, and more. Track your DSA revisions and never forget a pattern again.
+          The ultimate all-in-one dashboard for competitive programmers and software engineers. Sync your profiles from LeetCode, CodeChef, GFG, and more. Track your DSA revisions and never forget a pattern again.
         </p>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -40,7 +40,7 @@ export default function Home() {
         <div className="glass-card" style={{ padding: '2.5rem', textAlign: 'left' }}>
           <i className="fas fa-link" style={{ fontSize: '2.5rem', color: 'var(--primary-text)', marginBottom: '1.5rem' }}></i>
           <h3 style={{ marginBottom: '1rem', fontWeight: 800, fontSize: '1.4rem' }}>Multi-Platform Sync</h3>
-          <p style={{ fontSize: '1rem', color: '#64748b', lineHeight: 1.6 }}>Connect LeetCode, Codeforces, CodeChef, GFG, and Coding Ninjas into one unified dashboard. Stop jumping between tabs to see your stats.</p>
+          <p style={{ fontSize: '1rem', color: '#64748b', lineHeight: 1.6 }}>Connect LeetCode, CodeChef, GFG, and Coding Ninjas into one unified dashboard. Stop jumping between tabs to see your stats.</p>
         </div>
         
         <div className="glass-card" style={{ padding: '2.5rem', textAlign: 'left' }}>
