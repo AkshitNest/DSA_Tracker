@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as cheerio from 'cheerio';
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
@@ -16,13 +17,15 @@ export async function GET(req) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     const html = await response.text();
+    const $ = cheerio.load(html);
     
-    // Quick regex extraction to avoid heavy cheerio parsing if possible
-    const scoreMatch = html.match(/Overall Coding Score[^>]*>\s*<[^>]+>(\d+)</);
-    const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
+    // Extract score
+    const scoreText = $('.score_card_value').first().text() || '0';
+    const score = parseInt(scoreText) || 0;
     
-    const problemMatch = html.match(/Problem Solved[^>]*>\s*<[^>]+>(\d+)</);
-    const problems = problemMatch ? parseInt(problemMatch[1]) : 0;
+    // Extract solved problems
+    const solvedText = $('.score_card_value').eq(1).text() || '0';
+    const problems = parseInt(solvedText) || 0;
 
     return NextResponse.json({
       score,

@@ -17,7 +17,7 @@ export async function GET(req) {
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    const rating = $('.rating-number').text() || '0';
+    const rating = $('.rating-number').first().text() || '0';
     const starsText = $('.rating-star span').first().text() || '1★';
     const stars = parseInt(starsText.replace('★', '')) || 1;
     
@@ -25,10 +25,16 @@ export async function GET(req) {
     const maxRatingMatch = maxRatingText.match(/\d+/);
     const maxRating = maxRatingMatch ? maxRatingMatch[0] : rating;
 
+    // Fetch solved count
+    const solvedText = $('.problems-solved h3').first().text() || '0';
+    const solvedMatch = solvedText.match(/\d+/);
+    const solved = solvedMatch ? parseInt(solvedMatch[0]) : 0;
+
     return NextResponse.json({
       rating: parseInt(rating),
       stars,
-      maxRating: parseInt(maxRating)
+      maxRating: parseInt(maxRating),
+      solved: solved
     });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch CodeChef profile' }, { status: 500 });
