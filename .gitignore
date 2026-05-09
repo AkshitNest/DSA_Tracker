@@ -19,8 +19,8 @@ build/
 .env*.local
 
 # ===== Data Files (large generated files, not needed in repo) =====
-data/
-data/*.json
+data/*
+!data/sheets.json
 scripts/*.cjs
 
 # ===== Logs =====
