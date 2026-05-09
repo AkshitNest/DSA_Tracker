@@ -2,64 +2,11 @@
 
 import { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
+import RazorpayCheckout from '../components/RazorpayCheckout';
 
 export default function BuyMeCoffee() {
   const { user } = useUser();
-  const [loading, setLoading] = useState(false);
   const [paid, setPaid] = useState(false);
-
-  const handlePayment = async () => {
-    setLoading(true);
-    try {
-      // 1. Create order on backend
-      const res = await fetch('/api/payment', { method: 'POST' });
-      const { orderId, amount, currency, error } = await res.json();
-
-      if (error) throw new Error(error);
-
-      // 2. Load Razorpay script dynamically
-      await new Promise((resolve, reject) => {
-        if (window.Razorpay) { resolve(); return; }
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-
-      // 3. Open Razorpay checkout
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount,
-        currency,
-        name: 'DSA Tracker',
-        description: '☕ Buy Me a Coffee – Support the Project',
-        order_id: orderId,
-        prefill: {
-          name: user?.name || '',
-          email: user?.email || '',
-        },
-        theme: { color: '#000000' },
-        handler: function (response) {
-          setPaid(true);
-        },
-        modal: {
-          ondismiss: () => setLoading(false),
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', () => {
-        alert('Payment failed. Please try again.');
-        setLoading(false);
-      });
-      rzp.open();
-    } catch (err) {
-      console.error(err);
-      alert('Could not initiate payment. Please try again.');
-      setLoading(false);
-    }
-  };
 
   if (paid) {
     return (
@@ -112,21 +59,11 @@ export default function BuyMeCoffee() {
           ))}
         </div>
 
-        <button
-          onClick={handlePayment}
-          disabled={loading}
-          style={{
-            background: 'var(--primary)', color: 'var(--btn-text)',
-            border: 'none', borderRadius: '9999px',
-            padding: '1.2rem 3rem', fontSize: '1.2rem', fontWeight: 800,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            width: '100%', transition: 'all 0.2s',
-            opacity: loading ? 0.7 : 1,
-            letterSpacing: '-0.5px'
-          }}
-        >
-          {loading ? '⏳ Opening Razorpay...' : '☕ Support with ₹99'}
-        </button>
+        <RazorpayCheckout 
+          amount={9900} 
+          label="Support with ₹99" 
+          onSuccess={() => setPaid(true)} 
+        />
 
         <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '1.5rem' }}>
           Secure payment powered by Razorpay. UPI, Cards & Net Banking supported.
