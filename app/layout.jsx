@@ -15,11 +15,14 @@ export const metadata = {
     keywords: ['DSA Tracker', 'LeetCode tracker', 'competitive programming', 'data structures algorithms', 'interview preparation', 'spaced repetition DSA', 'company wise leetcode questions'],
     authors: [{ name: 'DSA Tracker' }],
     creator: 'DSA Tracker',
-    metadataBase: new URL('http://localhost:3000'),
+    metadataBase: new URL('https://dsa-tracker.vercel.app'),
+    alternates: {
+      canonical: '/',
+    },
     openGraph: {
       title: 'DSA Tracker — Master Data Structures & Algorithms',
-      description: 'Track your DSA revisions using spaced repetition. Sync your LeetCode, CodeChef, GFG profiles and prepare with 700+ company-wise interview questions.',
-      url: 'http://localhost:3000',
+      description: 'Track your DSA revisions using spaced repetition. Sync your LeetCode, CodeChef, and GFG profiles. Prepare with 700+ company-wise interview questions.',
+      url: 'https://dsa-tracker.vercel.app',
       siteName: 'DSA Tracker',
       images: [{ url: '/logo.png', width: 1024, height: 1024, alt: 'DSA Tracker Logo' }],
       locale: 'en_US',
@@ -28,13 +31,19 @@ export const metadata = {
     twitter: {
       card: 'summary_large_image',
       title: 'DSA Tracker — Master Data Structures & Algorithms',
-      description: 'Track your DSA revisions. Sync LeetCode, CodeChef & more. 700+ company-wise interview questions.',
+      description: 'Track your DSA revisions. Sync multi-platform profiles. 700+ company-wise interview questions.',
       images: ['/logo.png'],
     },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true },
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   icons: {
     icon: '/favicon.ico',
@@ -55,11 +64,18 @@ export default function RootLayout({ children }) {
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
           'name': 'DSA Tracker',
-          'url': 'http://localhost:3000',
-          'description': 'Track and revise your Data Structures and Algorithms questions with spaced repetition. Sync multi-platform competitive programming profiles.',
+          'url': 'https://dsa-tracker.vercel.app',
+          'description': 'The ultimate DSA revision tracker with multi-platform sync (LeetCode, CodeChef, GFG). Master algorithms with spaced repetition.',
           'applicationCategory': 'EducationalApplication',
           'operatingSystem': 'Web',
           'offers': { '@type': 'Offer', 'price': '0', 'priceCurrency': 'INR' },
+          'featureList': [
+            'LeetCode Profile Sync',
+            'Spaced Repetition Tracking',
+            'Company-wise DSA Questions',
+            'Global Leaderboard',
+            'Interactive Heatmap'
+          ]
         }) }} />
       </head>
       <body className="dark-mode" suppressHydrationWarning>
