@@ -20,6 +20,9 @@ const UserSchema = new mongoose.Schema({
   // Solved Stats (Aggregated for Leaderboard)
   stats: {
     leetcodeSolved: { type: Number, default: 0 },
+    leetcodeEasy: { type: Number, default: 0 },
+    leetcodeMedium: { type: Number, default: 0 },
+    leetcodeHard: { type: Number, default: 0 },
     codechefRating: { type: Number, default: 0 },
     codechefMaxRating: { type: Number, default: 0 },
     codechefStars: { type: Number, default: 1 },

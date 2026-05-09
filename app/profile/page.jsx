@@ -42,13 +42,31 @@ export default function Profile() {
         setCcUsername(dbUser.handles.codechef || '');
         setGfgUsername(dbUser.handles.gfg || '');
         setCnUsername(dbUser.handles.codingninjas || '');
+        
+        // Fetch Calendar and Profile for Heatmap on initial load if linked
+        if (dbUser.handles.leetcode) {
+          fetch(`https://alfa-leetcode-api.onrender.com/${dbUser.handles.leetcode}`)
+            .then(res => res.json())
+            .then(dataProfile => { if (!dataProfile.errors) setLcProfile(dataProfile); })
+            .catch(e => console.error('Initial LC Profile Fetch failed', e));
+
+          fetch(`https://alfa-leetcode-api.onrender.com/${dbUser.handles.leetcode}/calendar`)
+            .then(res => res.json())
+            .then(dataCal => setLcCalendar(dataCal))
+            .catch(e => console.error('Initial LC Calendar Fetch failed', e));
+        }
       }
       if (dbUser.stats) {
         const s = dbUser.stats;
-        if (s.leetcodeSolved) setLcStats({ total: s.leetcodeSolved, easy: Math.floor(s.leetcodeSolved * 0.4), medium: Math.floor(s.leetcodeSolved * 0.4), hard: Math.floor(s.leetcodeSolved * 0.2) });
-        if (s.codechefSolved) setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved });
-        if (s.gfgSolved) setGfgStats({ problems: s.gfgSolved });
-        if (s.codingninjasSolved) setCnStats({ solved: s.codingninjasSolved });
+        if (s.leetcodeSolved || dbUser.handles?.leetcode) setLcStats({ 
+          total: s.leetcodeSolved, 
+          easy: s.leetcodeEasy || Math.floor(s.leetcodeSolved * 0.4), 
+          medium: s.leetcodeMedium || Math.floor(s.leetcodeSolved * 0.4), 
+          hard: s.leetcodeHard || Math.floor(s.leetcodeSolved * 0.2) 
+        }); else setLcStats(null);
+        if (s.codechefSolved || dbUser.handles?.codechef) setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved }); else setCcStats(null);
+        if (s.gfgSolved || dbUser.handles?.gfg) setGfgStats({ problems: s.gfgSolved }); else setGfgStats(null);
+        if (s.codingninjasSolved || dbUser.handles?.codingninjas) setCnStats({ solved: s.codingninjasSolved }); else setCnStats(null);
       }
     }).catch(err => console.error('Initial fetch failed', err));
   }, []);
@@ -98,10 +116,15 @@ export default function Profile() {
         // Update local state from database response
         if (updatedUser.stats) {
           const s = updatedUser.stats;
-          setLcStats({ total: s.leetcodeSolved, easy: Math.floor(s.leetcodeSolved * 0.4), medium: Math.floor(s.leetcodeSolved * 0.4), hard: Math.floor(s.leetcodeSolved * 0.2) });
-          setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved });
-          setGfgStats({ problems: s.gfgSolved });
-          setCnStats({ solved: s.codingninjasSolved });
+          if (s.leetcodeSolved || updatedUser.handles?.leetcode) setLcStats({ 
+            total: s.leetcodeSolved, 
+            easy: s.leetcodeEasy || Math.floor(s.leetcodeSolved * 0.4), 
+            medium: s.leetcodeMedium || Math.floor(s.leetcodeSolved * 0.4), 
+            hard: s.leetcodeHard || Math.floor(s.leetcodeSolved * 0.2) 
+          }); else setLcStats(null);
+          if (s.codechefSolved || updatedUser.handles?.codechef) setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved }); else setCcStats(null);
+          if (s.gfgSolved || updatedUser.handles?.gfg) setGfgStats({ problems: s.gfgSolved }); else setGfgStats(null);
+          if (s.codingninjasSolved || updatedUser.handles?.codingninjas) setCnStats({ solved: s.codingninjasSolved }); else setCnStats(null);
         }
         
         alert('Profiles synced successfully!');
