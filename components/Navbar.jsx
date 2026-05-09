@@ -68,7 +68,7 @@ export default function Navbar() {
       console.error('Logout error', err);
     }
     // Then redirect to Auth0 logout or standard logout
-    window.location.href = '/api/auth/logout';
+    window.location.href = '/auth/logout';
   };
 
   return (

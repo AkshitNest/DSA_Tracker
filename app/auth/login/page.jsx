@@ -114,8 +114,8 @@ export default function LoginPage() {
           <div style={{ flex: 1, height: '1px', background: 'var(--border)' }}></div>
         </div>
 
-        {/* Since Auth0 handles /api/auth/login, we use that for the standard Auth0 flow */}
-        <a href="/api/auth/login" className="btn btn-secondary" style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
+        {/* Since Auth0 handles /auth/login via middleware, we use that for the standard Auth0 flow */}
+        <a href="/auth/login" className="btn btn-secondary" style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
           <i className="fab fa-google"></i> Continue with Auth0
         </a>
       </div>
