@@ -19,10 +19,16 @@ const UserSchema = new mongoose.Schema({
   stats: {
     leetcodeSolved: { type: Number, default: 0 },
     codeforcesRating: { type: Number, default: 0 },
+    codeforcesMaxRating: { type: Number, default: 0 },
+    codeforcesRank: { type: String, default: 'unrated' },
+    codeforcesSolved: { type: Number, default: 0 },
     codechefRating: { type: Number, default: 0 },
+    codechefMaxRating: { type: Number, default: 0 },
+    codechefStars: { type: Number, default: 1 },
+    codechefSolved: { type: Number, default: 0 },
     gfgSolved: { type: Number, default: 0 },
-    codingninjasLevel: { type: Number, default: 0 },
-    totalSolved: { type: Number, default: 0 }, // Main metric for leaderboard
+    codingninjasSolved: { type: Number, default: 0 },
+    totalSolved: { type: Number, default: 0 }, 
   },
   
   lastSynced: { type: Date, default: Date.now }
