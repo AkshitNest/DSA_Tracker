@@ -60,9 +60,9 @@ export default function Profile() {
         const s = dbUser.stats;
         if (s.leetcodeSolved || dbUser.handles?.leetcode) setLcStats({ 
           total: s.leetcodeSolved, 
-          easy: s.leetcodeEasy || Math.floor(s.leetcodeSolved * 0.4), 
-          medium: s.leetcodeMedium || Math.floor(s.leetcodeSolved * 0.4), 
-          hard: s.leetcodeHard || Math.floor(s.leetcodeSolved * 0.2) 
+          easy: s.leetcodeEasy ?? 0, 
+          medium: s.leetcodeMedium ?? 0, 
+          hard: s.leetcodeHard ?? 0 
         }); else setLcStats(null);
         if (s.codechefSolved || dbUser.handles?.codechef) setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved }); else setCcStats(null);
         if (s.gfgSolved || dbUser.handles?.gfg) setGfgStats({ problems: s.gfgSolved }); else setGfgStats(null);
@@ -118,9 +118,9 @@ export default function Profile() {
           const s = updatedUser.stats;
           if (s.leetcodeSolved || updatedUser.handles?.leetcode) setLcStats({ 
             total: s.leetcodeSolved, 
-            easy: s.leetcodeEasy || Math.floor(s.leetcodeSolved * 0.4), 
-            medium: s.leetcodeMedium || Math.floor(s.leetcodeSolved * 0.4), 
-            hard: s.leetcodeHard || Math.floor(s.leetcodeSolved * 0.2) 
+            easy: s.leetcodeEasy ?? 0, 
+            medium: s.leetcodeMedium ?? 0, 
+            hard: s.leetcodeHard ?? 0 
           }); else setLcStats(null);
           if (s.codechefSolved || updatedUser.handles?.codechef) setCcStats({ rating: s.codechefRating, maxRating: s.codechefMaxRating, stars: s.codechefStars, solved: s.codechefSolved }); else setCcStats(null);
           if (s.gfgSolved || updatedUser.handles?.gfg) setGfgStats({ problems: s.gfgSolved }); else setGfgStats(null);
