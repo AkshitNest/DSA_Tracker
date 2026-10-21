@@ -107,31 +107,33 @@ export async function POST(req) {
     const updatedUser = await User.findOneAndUpdate(
       { userId: sessionUser.sub },
       {
-        userId: sessionUser.sub,
-        name: sessionUser.name,
-        email: sessionUser.email,
-        picture: sessionUser.picture,
-        handles,
-        stats: {
-          leetcodeSolved,
-          leetcodeEasy,
-          leetcodeMedium,
-          leetcodeHard,
-          codechefRating: ccRating,
-          codechefMaxRating: ccMaxRating,
-          codechefStars: ccStars,
-          codechefSolved: ccSolved,
-          gfgSolved,
-          codingninjasSolved: cnSolved,
-          totalSolved
+        $set: {
+          userId: sessionUser.sub,
+          name: sessionUser.name,
+          email: sessionUser.email,
+          picture: sessionUser.picture,
+          handles,
+          stats: {
+            leetcodeSolved,
+            leetcodeEasy,
+            leetcodeMedium,
+            leetcodeHard,
+            codechefRating: ccRating,
+            codechefMaxRating: ccMaxRating,
+            codechefStars: ccStars,
+            codechefSolved: ccSolved,
+            gfgSolved,
+            codingninjasSolved: cnSolved,
+            totalSolved
+          },
+          lastSynced: new Date(),
+          lastVisited: new Date(),
         },
-        lastSynced: new Date(),
-        lastVisited: new Date(),
+        $inc: { visitCount: 1 }
       },
       { 
         upsert: true, 
         new: true,
-        $inc: { visitCount: 1 } 
       }
     );
 

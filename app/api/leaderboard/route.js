@@ -7,9 +7,10 @@ export async function GET(req) {
     await dbConnect();
     
     // Fetch all users sorted by totalSolved in descending order
-    const users = await User.find({})
+    const users = await User.find({ 'stats.totalSolved': { $gt: 0 } })
       .sort({ 'stats.totalSolved': -1 })
-      .limit(50); // Limit to top 50 users
+      .select('name picture stats') // Never expose password, email, handles, etc.
+      .limit(50);
 
     return NextResponse.json(users);
   } catch (error) {
